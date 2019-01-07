@@ -1,0 +1,19 @@
+language: bash
+
+env:
+    global:
+        - IMAGE_NAME: "fangedhex/base-images"
+
+services:
+    - docker
+
+script:
+    - docker build -t ${IMAGE_NAME}:nginx nginx
+    - docker build -t ${IMAGE_NAME}:php php
+    - docker build -t ${IMAGE_NAME}:symfony symfony
+
+after_success:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
+    - docker push ${IMAGE_NAME}:nginx
+    - docker push ${IMAGE_NAME}:php
+    - docker push ${IMAGE_NAME}:symfony
